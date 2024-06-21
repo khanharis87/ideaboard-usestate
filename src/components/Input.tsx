@@ -12,7 +12,7 @@ export default function Input({
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="flex items-center">
-      <label htmlFor={name} className="pr-2">
+      <label htmlFor={name} className="pr-2 hidden md:block">
         {label}:
       </label>
       <input
@@ -20,7 +20,7 @@ export default function Input({
         id={name}
         name={name}
         value={value}
-        className="border-b-2 bg-transparent"
+        className="border-b-2 bg-transparent focus:outline-none w-full"
         onChange={onChange}
         {...props}
       />

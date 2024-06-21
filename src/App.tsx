@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import IdeaBoard from "./components/IdeaBoard";
@@ -15,7 +15,9 @@ export type IdeaType = {
 };
 
 function App() {
-  const [ideas, setIdeas] = useState<IdeaType[]>([]);
+  const [ideas, setIdeas] = useState<IdeaType[]>(
+    JSON.parse(window.localStorage.getItem("ideas") || "[]")
+  );
 
   const addIdea = (idea: IdeaType) => {
     setIdeas([idea, ...ideas]);
@@ -35,13 +37,33 @@ function App() {
     setIdeas(ideas.filter((i) => i.id !== idea.id));
   };
 
+  const sortIdeasAlphabetically = () => {
+    setIdeas([...ideas].sort((a, b) => a.title.localeCompare(b.title)));
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem("ideas", JSON.stringify(ideas));
+  }, [ideas]);
+
   return (
     <>
       <h1 className="text-5xl mb-8">Idea Board</h1>
       <NewIdeaForm onSubmit={addIdea} />
+
       <IdeaBoard>
+        {ideas.length !== 0 && (
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={sortIdeasAlphabetically}
+              className="bg-blue-500  rounded-lg py-1 px-3"
+            >
+              Sort by title
+            </button>
+          </div>
+        )}
+
         {ideas.map((idea) => (
-          <li className="flex flex-col">
+          <li key={idea.id} className="flex flex-col">
             <Idea idea={idea} editIdea={submitEditItem} />
             {!idea?.editing && (
               <div className="flex gap-2">
